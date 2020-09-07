@@ -8,11 +8,6 @@ use App\Http\Resources\Hospital as HospitalResource;
 
 class HospitalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $hospitals = Hospital::all();
@@ -21,11 +16,6 @@ class HospitalController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create(Request $request)
     {
 
@@ -66,73 +56,122 @@ class HospitalController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $hospital = $request->isMethod('put') ? Hospital::findOrFail
-        ($request->id) : new Article;
-
-        $request->code = $request->input('code');
-        $request->name = $request->input('name');
-
-        if($hospital->save()){
-            return new HospitalResource($hospital);
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         //Get the hospital using ID
-        $hospital = Hospital::findOrFail($id);
-        return new HospitalResource($hospital);
+        $hospital = Hospital::find($id);
+        if(!$hospital){
+            return response()->json([
+                'message' => 'Hospital not found',
+            ], 404);
+        }
+        return response()->json([
+            'message' => 'Hospital found',
+            'data' => new HospitalResource($hospital)
+        ]);
+        
+    
 
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
+        $hospital = Hospital::find($id);
+        if(!$hospital) {
+            return response()->json([
+                'message' => 'Hospital not found',
+            ], 404);
+        }
+        if($request->code) {
+            $hospital->code = $request->code;
+        }
+        if($request->name) {
+            $hospital->name = $request->name;
+        }
+        if($request->office_address) {
+            $hospital->office_address = $request->office_address;
+        }
+        if($request->office_address_2) {
+            $hospital->office_address_2 = $request->office_address_2;
+        }
+        if($request->office_suburb) {
+            $hospital->office_suburb = $request->office_suburb;
+        }
+        if($request->office_state) {
+            $hospital->office_state = $request->office_state;
+        }
+        if($request->postal_address) {
+            $hospital->postal_address = $request->postal_address;
+        }
+        if($request->postal_address_2) {
+            $hospital->postal_address_2 = $request->postal_address_2;
+        }
+        if($request->postal_suburb) {
+            $hospital->postal_suburb = $request->postal_suburb;
+        }
+        if($request->postal_state) {
+            $hospital->postal_state = $request->postal_state;
+        }
+        if($request->office_telephone_2) {
+            $hospital->office_telephone = $request->office_telephone_2;
+        }
+        if($request->office_facsmile) {
+            $hospital->office_facsmile = $request->office_facsmile;
+        }   
+        if($request->office_email) {
+            $hospital->office_email = $request->office_email;
+        }
+        if($request->contact_title) {
+            $hospital->contact_title = $request->contact_title;
+        }   
+        if($request->contact_first_name) {
+            $hospital->contact_first_name = $request->contact_first_name;
+        }
+        if($request->contact_last_name) {
+            $hospital->contact_last_name = $request->contact_last_name;
+        }
+        if($request->contact_mobile) {
+            $hospital->contact_mobile = $request->contact_mobile;
+        }
+        if($request->contact_telephone) {
+            $hospital->contact_telephone = $request->contact_telephone;
+        }
+        if($request->contact_facsmile) {
+            $hospital->contact_facsmile = $request->contact_facsmile;
+        }
+        if($request->website) {
+            $hospital->website = $request->website;
+        }
+        if($request->num_rooms) {
+            $hospital->num_rooms = $request->num_rooms;
+        }
+        if($request->status) {
+            $hospital->status = $request->status;
+        }
+        
+        if($hospital->save()){
+            return response()->json([
+                'message' => 'Hospital updated successfully',
+                'data' => $hospital
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'Error updating!'
+            ]);
+        }
+        
+        
+
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        $hospital = Hospital::findOrFail($id);
+        $hospital = Hospital::find($id);
 
         if($hospital->delete()){
+            return response()->json([
+                'message' => 'Hospital Deleted Successfully!'
+            ]);
             return new HospitalResource($hospital);
         }
     }

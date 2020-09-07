@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('office_telephone');
             $table->string('mobile_number');
             $table->enum('permission', ['super_administrator', 'administrator', 'doctor', 'secretary']);
+            $table->string('forgotpassword_token');
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps(); 
